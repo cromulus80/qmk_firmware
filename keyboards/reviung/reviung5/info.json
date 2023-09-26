@@ -40,8 +40,8 @@
             {"pin_a": "D0", "pin_b": "D1"}
         ]
     },
-    "processor": "atmega32u4",
-    "bootloader": "caterina",
+    "processor": "cortex-m0plus",
+    "bootloader": "rp2040",
     "layout_aliases": {
         "LAYOUT_reviung5": "LAYOUT"
     },
