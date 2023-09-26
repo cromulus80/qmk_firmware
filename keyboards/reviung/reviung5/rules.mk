@@ -13,5 +13,5 @@ AUDIO_ENABLE = no           # Audio output
 ENCODER_ENABLE = yes
 
 # Bootloader selection
-BOOTLOADER = rp2040
 CONVERT_TO = kb2040
+
