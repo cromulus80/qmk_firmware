@@ -22,6 +22,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define RGBLIGHT_DEFAULT_VAL    128
 #define RGBLIGHT_DEFAULT_SAT    128
 
+#define RGBLIGHT_DEFAULT_SPD    3
+#define RGBLIGHT_EFFECT_BREATHE_MAX     160
+#define RGBLIGHT_EFFECT_BREATHE_CENTER  ( 2.7 )
+
 /* Mechanical locking support. Use KC_LCAP, KC_LNUM or KC_LSCR instead in keymap */
 #define LOCKING_SUPPORT_ENABLE
 /* Locking resynchronize hack */

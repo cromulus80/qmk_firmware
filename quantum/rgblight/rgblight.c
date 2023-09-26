@@ -1053,8 +1053,8 @@ void rgblight_task(void) {
     if (rgblight_status.timer_enabled) {
         effect_func_t effect_func   = rgblight_effect_dummy;
         uint16_t      interval_time = 2000; // dummy interval
-        uint8_t       delta         = rgblight_config.mode - rgblight_status.base_mode;
-        animation_status.delta      = delta;
+        //animation_status.delta      = rgblight_config.mode - rgblight_status.base_mode;
+        uint8_t       delta = rgblight_config.speed;
 
         // static light mode, do nothing here
         if (1 == 0) { // dummy
