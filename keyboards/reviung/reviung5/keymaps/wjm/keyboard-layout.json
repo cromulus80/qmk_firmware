@@ -1,0 +1,66 @@
+[
+  [
+    {
+      "y": 0.5,
+      "x": 1.25,
+      "t": "#02a39e\n\n\n#c7ad00",
+      "fa": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "<i>Ctrl</i>-Spc\n\n\nF9\n\n\n\n\n\n<i>Ctrl</i>-X",
+    {
+      "f2": 0
+    },
+    "<i class='fa fa-microphone-slash'></i>\n\n\nF10\n\n\n\n\n\n<i>Ctrl</i>-C",
+    "\n\n\n<i>Alt</i>-*\n\n\n\n\n\n<i>Ctrl</i>-V"
+  ],
+  [
+    {
+      "r": 12,
+      "rx": 0.5,
+      "ry": 0.5,
+      "y": -0.5,
+      "x": -0.4,
+      "fa": [
+        4,
+        0,
+        0,
+        0
+      ]
+    },
+    "<i class='fa fa-volume-off'></i>\n\n\nF5\n\n\n\n\n\n<i class='fa fa-power-off'></i>"
+  ],
+  [
+    {
+      "r": -15,
+      "rx": 4.9,
+      "y": -0.5,
+      "x": -0.5,
+      "t": "#02a39e\n#c7ad00\n#02a39e\n#c7ad00\n\n\n\n\n#02a39e\n\n#c7ad00",
+      "fa": [
+        4,
+        1,
+        4,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "<i class='fa fa-volume-down'></i>\n&uarr;-F11\n<i class='fa fa-volume-up'></i>\nF11\n\n\n\n\n\n<i class='fa fa-sort-amount-asc'></i>"
+  ]
+]
