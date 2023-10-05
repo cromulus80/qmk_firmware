@@ -37,8 +37,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     /* VS debugging shortcuts */
     [_DEVEL] = LAYOUT(
-     // continue        toggle bkpt     step over       jump to PC      layer switch
-        KC_F5,          KC_F9,          KC_F10,         LALT(KC_PAST),  TO(_BASE)
+     // continue        toggle bkpt     step in         jump to PC      layer switch
+        KC_F5,          KC_F9,          KC_F11,         LALT(KC_PAST),  TO(_BASE)
     ),
 };
 
@@ -48,8 +48,8 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
     [_BASE]  = { ENCODER_CCW_CW(KC_VOLD,        KC_VOLU) },
     // Next                     mouse wheel up  mouse wheel dn
     [_LOWER] = { ENCODER_CCW_CW(KC_WH_U,        KC_WH_D) },
-    // VS debug shortcuts       step out        step in
-    [_DEVEL] = { ENCODER_CCW_CW(LSFT(KC_F11),   KC_F11) },
+    // VS debug shortcuts       step out        step over
+    [_DEVEL] = { ENCODER_CCW_CW(LSFT(KC_F11),   KC_F10) },
 };
 #endif
 
