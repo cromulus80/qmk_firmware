@@ -1,2 +1,4 @@
 ENCODER_ENABLE = yes
 OLED_ENABLE = yes
+
+CONVERT_TO = promicro_rp2040
