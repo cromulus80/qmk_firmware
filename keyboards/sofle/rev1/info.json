@@ -15,7 +15,7 @@
     "diode_direction": "COL2ROW",
     "encoder": {
         "rotary": [
-            {"pin_a": "F5", "pin_b": "F4", "resolution": 2}
+            {"pin_a": "F4", "pin_b": "F5", "resolution": 2}
         ]
     },
     "split": {
@@ -23,19 +23,13 @@
         "encoder": {
             "right": {
                 "rotary": [
-                    {"pin_a": "F4", "pin_b": "F5", "resolution": 2}
+                    {"pin_a": "F5", "pin_b": "F4", "resolution": 2}
                 ]
             }
         }
     },
-    "tapping": {
-        "term": 100
-    },
-    "qmk": {
-        "tap_keycode_delay": 10
-    },
-    "processor": "atmega32u4",
-    "bootloader": "caterina",
+    "processor": "cortex-m0plus",
+    "bootloader": "rp2040",
     "layouts": {
         "LAYOUT": {
             "layout": [
