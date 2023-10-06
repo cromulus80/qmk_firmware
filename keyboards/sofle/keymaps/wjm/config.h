@@ -10,5 +10,6 @@ for more options.
 #define TAPPING_TERM 240
 #define PERMISSIVE_HOLD
 #define SPLIT_LAYER_STATE_ENABLE
+#define SPLIT_LED_STATE_ENABLE
 
 #define ACTION_DEBUG
