@@ -90,10 +90,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_GRV,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,                      KC_F,    KC_G,    KC_C,    KC_R,    KC_L,  KC_SLSH,
 LSFT_T(KC_TAB),KC_A,KC_O,    KC_E,    KC_U,    KC_I,                      KC_D,    KC_H,    KC_T,    KC_N,    KC_S,  KC_MINS,
  TG(_LOWER),KC_SCLN,KC_Q,    KC_J,    KC_K,    KC_X, KC_MUTE,     KC_APP, KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,  TG(_RAISE),
-		   // TODO So this is strange... suddenly my mod keys appear to be out of order. Also it only occurs when the left side is master.
-		   // TODO Need to debug matrix at some point. Reordering now as a workaround
-		   //KC_LGUI,KC_LALT,KC_LCTL,MO(_LOWER),   KC_ENT,      RSFT_T(KC_SPC),  MO(_RAISE), KC_RCTL, KC_RALT, KC_RGUI
-           KC_LCTL,KC_LALT,KC_LGUI,MO(_LOWER),   KC_ENT,      RSFT_T(KC_SPC),  MO(_RAISE), KC_RGUI, KC_RALT, KC_RCTL
+		   KC_LGUI,KC_LALT,KC_LCTL,MO(_LOWER),   KC_ENT,      RSFT_T(KC_SPC),  MO(_RAISE), KC_RCTL, KC_RALT, KC_RGUI
 ),
 /* LOWER
  * ,-----------------------------------------.                    ,-----------------------------------------.
@@ -136,16 +133,16 @@ LSFT_T(KC_TAB),KC_A,KC_O,    KC_E,    KC_U,    KC_I,                      KC_D, 
   _______, _______ , _______ , _______ , _______ , _______,                           _______,  _______  , _______,  _______ ,  _______ ,_______,
   _______,  KC_INS,  KC_PSCR,   KC_APP,  XXXXXXX, XXXXXXX,                        KC_PGUP, KC_PRVWD,  KC_UP, KC_NXTWD,KC_DLINE, KC_BSPC,
   _______, KC_LALT,  KC_LCTL,  KC_LSFT,QK_CAPS_WORD_TOGGLE, KC_CAPS,                       KC_PGDN,  KC_LEFT, KC_DOWN, KC_RGHT,  KC_DEL, KC_BSPC,
-  _______, _______,  KC_CUT, KC_COPY, KC_PASTE, XXXXXXX,QK_DYNAMIC_TAPPING_TERM_PRINT, _______, XXXXXXX,  KC_HOME, XXXXXXX, KC_END,   XXXXXXX, _______,
+  _______, _______,LCTL(KC_X),LCTL(KC_C),LCTL(KC_V),XXXXXXX,QK_DYNAMIC_TAPPING_TERM_PRINT, _______, XXXXXXX,  KC_HOME, XXXXXXX, KC_END,   XXXXXXX, _______,
                          _______, _______, _______, _______, _______,       _______, _______, _______, _______, _______
 ),
 /* ADJUST
  * ,-----------------------------------------.                    ,-----------------------------------------.
- * |      |      |      |      |      |      |                    |      |      |      |      |      |      |
+ * |QK_BOOT|     |      |      |      |      |                    |      |      |      |      |      |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |QK_BOOT|     |QWERTY|COLMAK|DVORAK|      |                    |      |      |      |      |      |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * |      |      |MACWIN|      |      |      |-------.    ,-------|      | VOLDO| MUTE | VOLUP|      |      |
+ * |      |      |      |      |      |      |-------.    ,-------|      | VOLDO| MUTE | VOLUP|      |      |
  * |------+------+------+------+------+------|       |    |       |------+------+------+------+------+------|
  * |      |      |      |      |      |      |-------|    |-------|      | PREV | PLAY | NEXT |      |      |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
@@ -155,9 +152,9 @@ LSFT_T(KC_TAB),KC_A,KC_O,    KC_E,    KC_U,    KC_I,                      KC_D, 
  */
 
   [_ADJUST] = LAYOUT(
-  XXXXXXX , XXXXXXX,  XXXXXXX ,  XXXXXXX , XXXXXXX, XXXXXXX,                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+  QK_BOOT , XXXXXXX,  XXXXXXX ,  XXXXXXX , XXXXXXX, XXXXXXX,                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   QK_BOOT  , XXXXXXX,KC_QWERTY,KC_COLEMAK,KC_DVORAK,XXXXXXX,                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-  XXXXXXX , XXXXXXX,CG_TOGG, XXXXXXX,    XXXXXXX,  XXXXXXX,                     XXXXXXX, KC_VOLD, KC_MUTE, KC_VOLU, XXXXXXX, XXXXXXX,
+  XXXXXXX , XXXXXXX,XXXXXXX, XXXXXXX,    XXXXXXX,  XXXXXXX,                     XXXXXXX, KC_VOLD, KC_MUTE, KC_VOLU, XXXXXXX, XXXXXXX,
   XXXXXXX , XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX,  XXXXXXX, XXXXXXX,     XXXXXXX, XXXXXXX, KC_MPRV, KC_MPLY, KC_MNXT, XXXXXXX, XXXXXXX,
                    _______, _______, _______, _______, _______,     _______, _______, _______, _______, _______
   )
@@ -428,7 +425,6 @@ void caps_word_set_user(bool active) {
 
 void keyboard_post_init_user(void) {
     debug_enable = true;
-    //debug_action = true;
 }
 
 #ifdef ENCODER_ENABLE
