@@ -9,6 +9,5 @@ for more options.
 #define TAPPING_TERM_PER_KEY
 #define TAPPING_TERM 240
 #define PERMISSIVE_HOLD
-#define RETRO_TAPPING
 
 #define ACTION_DEBUG

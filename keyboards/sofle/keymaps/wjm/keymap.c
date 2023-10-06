@@ -253,8 +253,6 @@ bool oled_task_user(void) {
         print_status_narrow();
     } else {
         oled_write_ln(get_u16_str(get_tapping_term(0, NULL), ' '), false);
-        oled_write   ("UPTIM", false);
-        oled_write_ln(get_u16_str(timer_read32()/1000, ' '), false);
         //render_logo();
     }
     return false;
