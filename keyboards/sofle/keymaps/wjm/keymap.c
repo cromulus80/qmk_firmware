@@ -133,7 +133,7 @@ LSFT_T(KC_TAB),KC_A,KC_O,    KC_E,    KC_U,    KC_I,                      KC_D, 
 [_RAISE] = LAYOUT(
   _______, _______ , _______ , _______ , _______ , _______,                           _______,  _______  , _______,  _______ ,  _______ ,_______,
   _______,  KC_INS,  KC_PSCR,   KC_APP,  XXXXXXX, XXXXXXX,                        KC_PGUP, KC_PRVWD,  KC_UP, KC_NXTWD,KC_DLINE, KC_BSPC,
-  _______, KC_LALT,  KC_LCTL,  KC_LSFT,QK_CAPS_WORD_TOGGLE, KC_CAPS,                       KC_PGDN,  KC_LEFT, KC_DOWN, KC_RGHT,  KC_DEL, KC_BSPC,
+  _______, KC_LALT,  KC_LCTL,  KC_LSFT,  CW_TOGG, KC_CAPS,                        KC_PGDN,  KC_LEFT, KC_DOWN, KC_RGHT,  KC_DEL, KC_BSPC,
   _______, _______,LCTL(KC_X),LCTL(KC_C),LCTL(KC_V),XXXXXXX,QK_DYNAMIC_TAPPING_TERM_PRINT, _______, XXXXXXX,  KC_HOME, XXXXXXX, KC_END,   XXXXXXX, _______,
                          _______, _______, _______, _______, _______,       _______, _______, _______, _______, _______
 ),
