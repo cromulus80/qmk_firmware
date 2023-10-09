@@ -7,6 +7,10 @@
 #include "keycode.h"
 #include "timer.h"
 
+#if TAP_CODE_DELAY > 0
+#include "wait.h"
+#endif
+
 #ifndef NO_ACTION_TAPPING
 
 #    if defined(IGNORE_MOD_TAP_INTERRUPT_PER_KEY)
@@ -99,6 +103,9 @@ void action_tapping_process(keyrecord_t record) {
         ac_dprintf("---- action_exec: process waiting_buffer -----\n");
     }
     for (; waiting_buffer_tail != waiting_buffer_head; waiting_buffer_tail = (waiting_buffer_tail + 1) % WAITING_BUFFER_SIZE) {
+#if TAP_CODE_DELAY > 0
+        wait_ms(TAP_CODE_DELAY);
+#endif
         if (process_tapping(&waiting_buffer[waiting_buffer_tail])) {
             ac_dprintf("processed: waiting_buffer[%u] =", waiting_buffer_tail);
             debug_record(waiting_buffer[waiting_buffer_tail]);
