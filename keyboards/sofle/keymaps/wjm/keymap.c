@@ -18,7 +18,8 @@ enum custom_keycodes {
     KC_NXTWD,
     KC_LSTRT,
     KC_LEND,
-    KC_DLINE
+    KC_DLINE,
+    DBG_TOGG,
 };
 
 
@@ -153,7 +154,7 @@ LSFT_T(KC_TAB),KC_A,KC_O,    KC_E,    KC_U,    KC_I,                      KC_D, 
 
   [_ADJUST] = LAYOUT(
   QK_BOOT , XXXXXXX,  XXXXXXX ,  XXXXXXX , XXXXXXX, XXXXXXX,                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-  QK_BOOT  , XXXXXXX,KC_QWERTY,KC_COLEMAK,KC_DVORAK,XXXXXXX,                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+  QK_BOOT  , DBG_TOGG,KC_QWERTY,KC_COLEMAK,KC_DVORAK,XXXXXXX,                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   XXXXXXX , XXXXXXX,XXXXXXX, XXXXXXX,    XXXXXXX,  XXXXXXX,                     XXXXXXX, KC_VOLD, KC_MUTE, KC_VOLU, XXXXXXX, XXXXXXX,
   XXXXXXX , XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX,  XXXXXXX, XXXXXXX,     XXXXXXX, XXXXXXX, KC_MPRV, KC_MPLY, KC_MNXT, XXXXXXX, XXXXXXX,
                    _______, _______, _______, _______, _______,     _______, _______, _______, _______, _______
@@ -402,6 +403,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 unregister_code(KC_Z);
             }
             return false;
+        case DBG_TOGG:
+            if (record->event.pressed) {
+                debug_config.enable = !debug_config.enable;
+            }
+            return false;
     }
     return true;
 }
@@ -424,7 +430,8 @@ void caps_word_set_user(bool active) {
 }
 
 void keyboard_post_init_user(void) {
-    debug_enable = true;
+    debug_config.enable = true;
+    debug_config.keyboard = true;
 }
 
 #ifdef ENCODER_ENABLE
