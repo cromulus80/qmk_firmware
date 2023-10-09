@@ -23,6 +23,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "keycode_config.h"
 #include <string.h>
 
+#include "wait.h"
+
 extern keymap_config_t keymap_config;
 
 static uint8_t real_mods = 0;
@@ -257,6 +259,7 @@ bool is_oneshot_enabled(void) {
  * FIXME: needs doc
  */
 void send_keyboard_report(void) {
+    static uint16_t min_wait_timer = 0;
     keyboard_report->mods = real_mods;
     keyboard_report->mods |= weak_mods;
 
@@ -289,8 +292,12 @@ void send_keyboard_report(void) {
     if (memcmp(&last_report, keyboard_report, sizeof(report_keyboard_t)) != 0)
 #endif
     {
+        while (timer_elapsed(min_wait_timer) < TAP_CODE_DELAY) {
+            wait_ms(1);
+        }
         memcpy(&last_report, keyboard_report, sizeof(report_keyboard_t));
         host_keyboard_send(keyboard_report);
+        min_wait_timer = timer_read();
 
 #ifdef DOUBLE_REPORT
         memcpy(keyboard_report, &last_report, sizeof(report_keyboard_t)); // host_keyboard_send() sometimes modifies keyboard_report to handle protocol details, so restore the original from last_report
