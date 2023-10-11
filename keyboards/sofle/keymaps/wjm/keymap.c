@@ -189,6 +189,17 @@ static void render_logo(void) {
 }
 #endif
 
+const char PROGMEM gfx_white_chevron[] = {
+    0,  0,  0,  0,128,128, 64, 32, 32, 16,  8,  4,132,130, 65, 65,130,132,  4,  8, 16, 16, 32, 64,128,128,  0,  0,  0,  0,  0,  0,
+  124, 66, 66, 65, 32, 16, 16,  8,  4,  4,  2,  1,  0,  0,  0,  0,  0,  0,  1,  2,  2,  4,  8, 16, 16, 32, 65, 66, 66,124,  0,  0,
+    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+};
+#define CHEV_SZ             sizeof(gfx_white_chevron)
+#define CHEV_FRAME_DELAY    1
+#define RAW_WIDTH           32
+
+static char chev_frames[2][CHEV_SZ];
+
 static void print_status_narrow(void) {
     // Print current mode
     oled_write_P(PSTR("\n\n"), false);
@@ -242,7 +253,19 @@ static void print_status_narrow(void) {
 
 }
 
+static void advance_frame(char *dest, char *src) {
+    int i;
+    memset(dest, 0, CHEV_SZ);
+    for(i = 0; i < CHEV_SZ; i++) {
+        char low_bit = src[i] & 0x01;
+        dest[i] |= src[i] >> 1;
+        dest[(i + (CHEV_SZ/RAW_WIDTH-1)*RAW_WIDTH) % CHEV_SZ] |= (low_bit << 7);
+    }
+}
+
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
+    memcpy(chev_frames[0], gfx_white_chevron, sizeof(chev_frames[0]));
+    memset(chev_frames[1], 0, sizeof(chev_frames[0]));
     //if (is_keyboard_master()) {
         return OLED_ROTATION_270;
     //}
@@ -250,12 +273,31 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) {
 }
 
 bool oled_task_user(void) {
+    static uint16_t anim_timer = 0;
+    static bool toggle = false;
+
     if (is_keyboard_master()) {
         print_status_narrow();
     } else {
         //oled_write_ln(get_u16_str(get_tapping_term(0, NULL), ' '), false);
         //render_logo();
-        print_status_narrow();
+        if (get_highest_layer(layer_state) == _RAISE) {
+            // Clear the OLED if this is a new layer change
+            if (timer_elapsed(anim_timer) > 1000) {
+                oled_clear();
+            }
+            oled_set_cursor(0, 5);
+            oled_write_raw_P(chev_frames[toggle], sizeof(chev_frames[toggle]));
+            oled_set_cursor(0, 5 + CHEV_SZ/RAW_WIDTH);
+            oled_write_raw_P(chev_frames[toggle], sizeof(chev_frames[toggle]));
+            if (timer_elapsed(anim_timer) > CHEV_FRAME_DELAY) {
+                toggle = !toggle;
+                anim_timer = timer_read();
+                advance_frame(chev_frames[toggle], chev_frames[!toggle]);
+            }
+        } else {
+            print_status_narrow();
+        }
     }
     return false;
 }
