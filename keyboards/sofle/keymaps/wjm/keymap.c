@@ -331,14 +331,24 @@ bool oled_task_user(void) {
 layer_state_t layer_state_set_user(layer_state_t state) {
     layer_state_t result_state;
     result_state = update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
-    if (get_highest_layer(result_state) == _RAISE) {
-        memcpy(chev_frames[0], gfx_white_up_chevron, sizeof(chev_frames[0]));
-        memset(chev_frames[1], 0, sizeof(chev_frames[0]));
-    } else if (get_highest_layer(result_state) == _LOWER) {
-        memcpy(chev_frames[0], gfx_white_dn_chevron, sizeof(chev_frames[0]));
-        memset(chev_frames[1], 0, sizeof(chev_frames[0]));
-    }
     return result_state;
+}
+
+void housekeeping_task_user(void) {
+    static layer_state_t last_layer = 0;
+    if (!is_keyboard_master()) {
+        if (last_layer != layer_state) {
+            oled_clear();
+            if (get_highest_layer(layer_state) == _LOWER) {
+                memcpy(chev_frames[0], gfx_white_dn_chevron, sizeof(chev_frames[0]));
+                memset(chev_frames[1], 0, sizeof(chev_frames[0]));
+            } else if (get_highest_layer(layer_state) == _RAISE) {
+                memcpy(chev_frames[0], gfx_white_up_chevron, sizeof(chev_frames[0]));
+                memset(chev_frames[1], 0, sizeof(chev_frames[0]));
+            }
+            last_layer = layer_state;
+        }
+    }
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
