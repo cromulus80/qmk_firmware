@@ -1,5 +1,7 @@
 #include QMK_KEYBOARD_H
 
+extern uint8_t* oled_cursor;
+
 enum sofle_layers {
     /* _M_XYZ = Mac Os, _W_XYZ = Win/Linux */
     _QWERTY,
@@ -91,7 +93,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_GRV,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,                      KC_F,    KC_G,    KC_C,    KC_R,    KC_L,  KC_SLSH,
 LSFT_T(KC_TAB),KC_A,KC_O,    KC_E,    KC_U,    KC_I,                      KC_D,    KC_H,    KC_T,    KC_N,    KC_S,  KC_MINS,
  TG(_LOWER),KC_SCLN,KC_Q,    KC_J,    KC_K,    KC_X, KC_MUTE,     KC_APP, KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,  TG(_RAISE),
-		   KC_LGUI,KC_LALT,KC_LCTL,MO(_LOWER),   KC_ENT,      RSFT_T(KC_SPC),  MO(_RAISE), KC_RCTL, KC_RALT, KC_RGUI
+           KC_LGUI,KC_LALT,KC_LCTL,MO(_LOWER),   KC_ENT,      RSFT_T(KC_SPC),  MO(_RAISE), KC_RCTL, KC_RALT, KC_RGUI
 ),
 /* LOWER
  * ,-----------------------------------------.                    ,-----------------------------------------.
@@ -189,12 +191,17 @@ static void render_logo(void) {
 }
 #endif
 
-const char PROGMEM gfx_white_chevron[] = {
+const char PROGMEM gfx_white_dn_chevron[] = {
+   62, 66, 66,130,  4,  8,  8, 16, 32, 32, 64,128,  0,  0,  0,  0,  0,  0,128, 64, 64, 32, 16,  8,  4,  2,130, 66, 66, 62,  0,  0,
+    0,  0,  0,  0,  1,  1,  2,  4,  4,  8, 16, 32, 33, 65,130,130, 65, 33, 32, 16,  8,  8,  4,  2,  1,  1,  0,  0,  0,  0,  0,  0,
+    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+};
+const char PROGMEM gfx_white_up_chevron[] = {
     0,  0,  0,  0,128,128, 64, 32, 32, 16,  8,  4,132,130, 65, 65,130,132,  4,  8, 16, 16, 32, 64,128,128,  0,  0,  0,  0,  0,  0,
   124, 66, 66, 65, 32, 16, 16,  8,  4,  4,  2,  1,  0,  0,  0,  0,  0,  0,  1,  2,  2,  4,  8, 16, 16, 32, 65, 66, 66,124,  0,  0,
     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
 };
-#define CHEV_SZ             sizeof(gfx_white_chevron)
+#define CHEV_SZ             sizeof(gfx_white_up_chevron)
 #define CHEV_FRAME_DELAY    1
 #define RAW_WIDTH           32
 
@@ -253,7 +260,17 @@ static void print_status_narrow(void) {
 
 }
 
-static void advance_frame(char *dest, char *src) {
+static void advance_frame_dn(char *dest, char *src) {
+    int i;
+    memset(dest, 0, CHEV_SZ);
+    for(i = 0; i < CHEV_SZ; i++) {
+        char hi_bit = src[i] & 0x80;
+        dest[i] |= src[i] << 1;
+        dest[(i - 2 * (CHEV_SZ/RAW_WIDTH-1)*RAW_WIDTH) % CHEV_SZ] |= (hi_bit >> 7);
+    }
+}
+
+static void advance_frame_up(char *dest, char *src) {
     int i;
     memset(dest, 0, CHEV_SZ);
     for(i = 0; i < CHEV_SZ; i++) {
@@ -264,12 +281,9 @@ static void advance_frame(char *dest, char *src) {
 }
 
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
-    memcpy(chev_frames[0], gfx_white_chevron, sizeof(chev_frames[0]));
+    memcpy(chev_frames[0], gfx_white_up_chevron, sizeof(chev_frames[0]));
     memset(chev_frames[1], 0, sizeof(chev_frames[0]));
-    //if (is_keyboard_master()) {
-        return OLED_ROTATION_270;
-    //}
-    //return rotation;
+    return OLED_ROTATION_270;
 }
 
 bool oled_task_user(void) {
@@ -279,21 +293,31 @@ bool oled_task_user(void) {
     if (is_keyboard_master()) {
         print_status_narrow();
     } else {
-        //oled_write_ln(get_u16_str(get_tapping_term(0, NULL), ' '), false);
-        //render_logo();
         if (get_highest_layer(layer_state) == _RAISE) {
-            // Clear the OLED if this is a new layer change
-            if (timer_elapsed(anim_timer) > 1000) {
-                oled_clear();
+            oled_set_cursor(0, 0);
+            for (int i = 0; i < 5; i++) {
+                oled_write_raw_P(chev_frames[toggle], CHEV_SZ);
+                oled_cursor += CHEV_SZ;
             }
-            oled_set_cursor(0, 5);
-            oled_write_raw_P(chev_frames[toggle], sizeof(chev_frames[toggle]));
-            oled_set_cursor(0, 5 + CHEV_SZ/RAW_WIDTH);
-            oled_write_raw_P(chev_frames[toggle], sizeof(chev_frames[toggle]));
             if (timer_elapsed(anim_timer) > CHEV_FRAME_DELAY) {
-                toggle = !toggle;
                 anim_timer = timer_read();
-                advance_frame(chev_frames[toggle], chev_frames[!toggle]);
+                advance_frame_up(chev_frames[!toggle], chev_frames[toggle]);
+                advance_frame_up(chev_frames[toggle], chev_frames[!toggle]);
+                advance_frame_up(chev_frames[!toggle], chev_frames[toggle]);
+                advance_frame_up(chev_frames[toggle], chev_frames[!toggle]);
+            }
+        } else if (get_highest_layer(layer_state) == _LOWER) {
+            oled_set_cursor(0, 0);
+            for (int i = 0; i < 5; i++) {
+                oled_write_raw_P(chev_frames[toggle], CHEV_SZ);
+                oled_cursor += CHEV_SZ;
+            }
+            if (timer_elapsed(anim_timer) > CHEV_FRAME_DELAY) {
+                anim_timer = timer_read();
+                advance_frame_dn(chev_frames[!toggle], chev_frames[toggle]);
+                advance_frame_dn(chev_frames[toggle], chev_frames[!toggle]);
+                advance_frame_dn(chev_frames[!toggle], chev_frames[toggle]);
+                advance_frame_dn(chev_frames[toggle], chev_frames[!toggle]);
             }
         } else {
             print_status_narrow();
@@ -305,7 +329,16 @@ bool oled_task_user(void) {
 #endif
 
 layer_state_t layer_state_set_user(layer_state_t state) {
-    return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
+    layer_state_t result_state;
+    result_state = update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
+    if (get_highest_layer(result_state) == _RAISE) {
+        memcpy(chev_frames[0], gfx_white_up_chevron, sizeof(chev_frames[0]));
+        memset(chev_frames[1], 0, sizeof(chev_frames[0]));
+    } else if (get_highest_layer(result_state) == _LOWER) {
+        memcpy(chev_frames[0], gfx_white_dn_chevron, sizeof(chev_frames[0]));
+        memset(chev_frames[1], 0, sizeof(chev_frames[0]));
+    }
+    return result_state;
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -464,12 +497,6 @@ const key_override_t **key_overrides = (const key_override_t *[]){
     &win_tilde_override,
     NULL
 };
-
-void caps_word_set_user(bool active) {
-#ifdef OLED_ENABLE
-    //oled_clear();
-#endif
-}
 
 void keyboard_post_init_user(void) {
     debug_config.enable = true;
