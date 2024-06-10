@@ -291,9 +291,11 @@ void send_keyboard_report(void) {
     static report_keyboard_t last_report;
 
     /* Only send the report if there are changes to propagate to the host. */
-    if (memcmp(keyboard_report, &last_report, sizeof(report_keyboard_t)) != 0) {
-        while (timer_elapsed(min_wait_timer) < TAP_CODE_DELAY) {
-            wait_ms(1);
+    if (memcmp(&last_report, keyboard_report, sizeof(report_keyboard_t)) != 0)
+    {
+        uint16_t elapsed;
+        while ((elapsed = timer_elapsed(min_wait_timer)) < TAP_CODE_DELAY) {
+            wait_ms(TAP_CODE_DELAY - elapsed);
         }
         memcpy(&last_report, keyboard_report, sizeof(report_keyboard_t));
         host_keyboard_send(keyboard_report);
